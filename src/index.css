@@ -50,7 +50,7 @@ body::before {
   background-position: center 20%;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  filter: grayscale(1) contrast(1.08) brightness(0.8);
+  filter: brightness(0.85);
 }
 
 body::after {
