@@ -31,14 +31,35 @@ body {
   font-size: 18px;
   line-height: 1.6;
   color: var(--umber);
-  background-color: var(--ivory);
-  background-image:
-    radial-gradient(ellipse at 15% 8%, rgba(0, 0, 0, 0.05), transparent 45%),
-    radial-gradient(ellipse at 85% 92%, rgba(0, 0, 0, 0.04), transparent 50%),
-    repeating-radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.03) 0, rgba(0, 0, 0, 0.03) 1px, transparent 2px, transparent 3px),
-    linear-gradient(180deg, var(--ivory), var(--marble) 140%);
+  background-color: #05050a;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+body::before {
+  background-image: url('/landing_page.png');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: grayscale(1) contrast(1.08) brightness(0.8);
+}
+
+body::after {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.68) 45%, rgba(0, 0, 0, 0.82) 100%);
+}
+
+#root {
+  position: relative;
+  z-index: 0;
 }
 
 h1,
@@ -72,7 +93,7 @@ input {
   height: 1px;
   border: none;
   margin: 0;
-  background: linear-gradient(90deg, transparent, var(--gold) 15%, var(--gold) 85%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7) 15%, rgba(255, 255, 255, 0.7) 85%, transparent);
   position: relative;
 }
 
@@ -82,20 +103,20 @@ input {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: var(--ivory);
   padding: 0 0.6em;
-  color: var(--gold);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.9rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .teardrop {
   display: inline-block;
   width: 0.55em;
   height: 0.75em;
-  background: linear-gradient(160deg, #555555, var(--gold) 120%);
+  background: linear-gradient(160deg, #ffffff, #b8b8b8 120%);
   border-radius: 60% 60% 60% 5% / 65% 65% 45% 45%;
   transform: rotate(-8deg);
-  box-shadow: 0 1px 2px var(--shadow-deep);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .gold-rays {
@@ -104,43 +125,43 @@ input {
   pointer-events: none;
   background: conic-gradient(
     from 90deg at 50% 50%,
-    rgba(0, 0, 0, 0.14) 0deg,
+    rgba(255, 255, 255, 0.22) 0deg,
     transparent 8deg,
     transparent 22deg,
-    rgba(0, 0, 0, 0.1) 30deg,
+    rgba(255, 255, 255, 0.16) 30deg,
     transparent 38deg,
     transparent 52deg,
-    rgba(0, 0, 0, 0.14) 60deg,
+    rgba(255, 255, 255, 0.22) 60deg,
     transparent 68deg,
     transparent 82deg,
-    rgba(0, 0, 0, 0.1) 90deg,
+    rgba(255, 255, 255, 0.16) 90deg,
     transparent 98deg,
     transparent 112deg,
-    rgba(0, 0, 0, 0.14) 120deg,
+    rgba(255, 255, 255, 0.22) 120deg,
     transparent 128deg,
     transparent 142deg,
-    rgba(0, 0, 0, 0.1) 150deg,
+    rgba(255, 255, 255, 0.16) 150deg,
     transparent 158deg,
     transparent 172deg,
-    rgba(0, 0, 0, 0.14) 180deg,
+    rgba(255, 255, 255, 0.22) 180deg,
     transparent 188deg,
     transparent 202deg,
-    rgba(0, 0, 0, 0.1) 210deg,
+    rgba(255, 255, 255, 0.16) 210deg,
     transparent 218deg,
     transparent 232deg,
-    rgba(0, 0, 0, 0.14) 240deg,
+    rgba(255, 255, 255, 0.22) 240deg,
     transparent 248deg,
     transparent 262deg,
-    rgba(0, 0, 0, 0.1) 270deg,
+    rgba(255, 255, 255, 0.16) 270deg,
     transparent 278deg,
     transparent 292deg,
-    rgba(0, 0, 0, 0.14) 300deg,
+    rgba(255, 255, 255, 0.22) 300deg,
     transparent 308deg,
     transparent 322deg,
-    rgba(0, 0, 0, 0.1) 330deg,
+    rgba(255, 255, 255, 0.16) 330deg,
     transparent 338deg,
     transparent 352deg,
-    rgba(0, 0, 0, 0.14) 360deg
+    rgba(255, 255, 255, 0.22) 360deg
   );
   border-radius: 50%;
   mask-image: radial-gradient(circle, black 0%, black 55%, transparent 78%);
@@ -156,53 +177,11 @@ input {
 
 .app-header {
   text-align: center;
-  padding-bottom: 1.75rem;
+  padding: 2.5rem 0 1.75rem;
   position: relative;
 }
 
-.hero-frame {
-  position: relative;
-  height: clamp(260px, 38vw, 420px);
-  margin-bottom: 1.75rem;
-  border: 1px solid var(--gold);
-  outline: 6px solid rgba(255, 255, 255, 0.5);
-  outline-offset: -10px;
-  overflow: hidden;
-  box-shadow: 0 14px 34px -14px var(--shadow-deep);
-}
-
-.hero-frame .hero-img {
-  position: absolute;
-  inset: 0;
-  background-image: url('/landing_page.png');
-  background-size: cover;
-  background-position: center 32%;
-  filter: grayscale(1) contrast(1.08) brightness(0.92);
-}
-
-.hero-frame .hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.45) 65%, rgba(0, 0, 0, 0.72) 100%);
-}
-
-.hero-frame .corner {
-  z-index: 1;
-}
-
-.hero-frame .hero-text {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem 1.25rem;
-}
-
-.hero-frame .eyebrow {
+.app-header .eyebrow {
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
   letter-spacing: 0.35em;
@@ -212,13 +191,13 @@ input {
   margin-bottom: 0.6rem;
 }
 
-.hero-frame h1 {
+.app-header h1 {
   font-size: clamp(2.2rem, 5vw, 3.2rem);
   color: #ffffff;
   text-shadow: 0 3px 16px rgba(0, 0, 0, 0.55);
 }
 
-.hero-frame p.tagline {
+.app-header p.tagline {
   margin-top: 0.6rem;
   font-size: 1.05rem;
   color: rgba(255, 255, 255, 0.82);
@@ -248,7 +227,7 @@ input {
   padding: 0.75rem 1.1rem 0.75rem 2.4rem;
   border-radius: 2px;
   border: 1px solid var(--gold-soft);
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--umber);
   font-size: 1.05rem;
   font-style: italic;
@@ -307,7 +286,8 @@ input {
 
 .tag-filter-bar .label {
   font-style: italic;
-  color: var(--rose);
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   margin-right: 0.25rem;
@@ -391,7 +371,7 @@ input {
 
 .frame-card {
   position: relative;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(228, 228, 226, 0.6));
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.97), rgba(228, 228, 226, 0.88));
   padding: 1.3rem 1.4rem 1.15rem;
   border: 1px solid var(--gold);
   outline: 5px solid rgba(255, 255, 255, 0.5);
@@ -544,11 +524,13 @@ input {
 
 .empty-state h3 {
   font-size: 1.5rem;
-  color: var(--umber);
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .empty-state p {
-  color: var(--umber-soft);
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
   font-style: italic;
   margin-top: 0.5rem;
 }
@@ -751,13 +733,14 @@ input {
 
 .config-banner {
   border: 1px dashed var(--ink);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--umber);
   padding: 1rem 1.2rem;
   border-radius: 2px;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
   line-height: 1.55;
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
 }
 
 .config-banner code {
@@ -768,23 +751,26 @@ input {
 
 .error-banner {
   border: 1px solid var(--ink);
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.92);
   color: var(--umber);
   padding: 0.8rem 1.1rem;
   border-radius: 2px;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
 }
 
 .loading-text {
   text-align: center;
-  color: var(--umber-soft);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
   font-style: italic;
   padding: 3rem 0;
 }
 
 .results-count {
-  color: var(--umber-soft);
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   font-size: 0.88rem;
   font-style: italic;
   margin-bottom: 1rem;
