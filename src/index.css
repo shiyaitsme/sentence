@@ -160,26 +160,70 @@ input {
   position: relative;
 }
 
-.app-header .eyebrow {
+.hero-frame {
+  position: relative;
+  height: clamp(260px, 38vw, 420px);
+  margin-bottom: 1.75rem;
+  border: 1px solid var(--gold);
+  outline: 6px solid rgba(255, 255, 255, 0.5);
+  outline-offset: -10px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px -14px var(--shadow-deep);
+}
+
+.hero-frame .hero-img {
+  position: absolute;
+  inset: 0;
+  background-image: url('/landing_page.png');
+  background-size: cover;
+  background-position: center 32%;
+  filter: grayscale(1) contrast(1.08) brightness(0.92);
+}
+
+.hero-frame .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.45) 65%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+.hero-frame .corner {
+  z-index: 1;
+}
+
+.hero-frame .hero-text {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem 1.25rem;
+}
+
+.hero-frame .eyebrow {
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   font-size: 0.7rem;
-  color: var(--rose);
-  margin-bottom: 0.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.6rem;
 }
 
-.app-header h1 {
+.hero-frame h1 {
   font-size: clamp(2.2rem, 5vw, 3.2rem);
-  color: var(--ink);
+  color: #ffffff;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.55);
 }
 
-.app-header p.tagline {
+.hero-frame p.tagline {
   margin-top: 0.6rem;
   font-size: 1.05rem;
-  color: var(--umber-soft);
+  color: rgba(255, 255, 255, 0.82);
   font-style: italic;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- toolbar: search + add button ---------- */
