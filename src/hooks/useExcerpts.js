@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
-import { isSupabaseConfigured, supabase } from '../lib/supabase'
 
-function parseTags(raw) {
-  return Array.from(
-    new Set(
-      raw
-        .split(/[,，\s]+/)
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-    ),
-  )
+const API_BASE = '/api/excerpts'
+
+async function parseErrorMessage(response) {
+  try {
+    const body = await response.json()
+    return body.error || `请求失败（${response.status}）`
+  } catch {
+    return `请求失败（${response.status}）`
+  }
 }
 
 export function useExcerpts() {
@@ -18,23 +17,17 @@ export function useExcerpts() {
   const [error, setError] = useState(null)
 
   const fetchExcerpts = useCallback(async () => {
-    if (!isSupabaseConfigured) {
-      setLoading(false)
-      return
-    }
     setLoading(true)
-    const { data, error: fetchError } = await supabase
-      .from('excerpts')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (fetchError) {
-      setError(fetchError.message)
-    } else {
+    try {
+      const response = await fetch(API_BASE)
+      if (!response.ok) throw new Error(await parseErrorMessage(response))
+      setExcerpts(await response.json())
       setError(null)
-      setExcerpts(data ?? [])
+    } catch (err) {
+      setError(err.message || '无法连接数据库')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -42,48 +35,32 @@ export function useExcerpts() {
   }, [fetchExcerpts])
 
   const addExcerpt = useCallback(async ({ content, source, tagsInput, note }) => {
-    if (!isSupabaseConfigured) throw new Error('尚未连接 Supabase，请先在 .env.local 中配置')
-    const payload = {
-      content: content.trim(),
-      source: source?.trim() || null,
-      note: note?.trim() || null,
-      tags: parseTags(tagsInput ?? ''),
-    }
-    const { data, error: insertError } = await supabase
-      .from('excerpts')
-      .insert(payload)
-      .select()
-      .single()
-
-    if (insertError) throw new Error(insertError.message)
+    const response = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ content, source, tagsInput, note }),
+    })
+    if (!response.ok) throw new Error(await parseErrorMessage(response))
+    const data = await response.json()
     setExcerpts((prev) => [data, ...prev])
     return data
   }, [])
 
   const updateExcerpt = useCallback(async (id, { content, source, tagsInput, note }) => {
-    if (!isSupabaseConfigured) throw new Error('尚未连接 Supabase，请先在 .env.local 中配置')
-    const payload = {
-      content: content.trim(),
-      source: source?.trim() || null,
-      note: note?.trim() || null,
-      tags: parseTags(tagsInput ?? ''),
-    }
-    const { data, error: updateError } = await supabase
-      .from('excerpts')
-      .update(payload)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (updateError) throw new Error(updateError.message)
+    const response = await fetch(`${API_BASE}/${id}`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ content, source, tagsInput, note }),
+    })
+    if (!response.ok) throw new Error(await parseErrorMessage(response))
+    const data = await response.json()
     setExcerpts((prev) => prev.map((item) => (item.id === id ? data : item)))
     return data
   }, [])
 
   const deleteExcerpt = useCallback(async (id) => {
-    if (!isSupabaseConfigured) throw new Error('尚未连接 Supabase，请先在 .env.local 中配置')
-    const { error: deleteError } = await supabase.from('excerpts').delete().eq('id', id)
-    if (deleteError) throw new Error(deleteError.message)
+    const response = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' })
+    if (!response.ok) throw new Error(await parseErrorMessage(response))
     setExcerpts((prev) => prev.filter((item) => item.id !== id))
   }, [])
 

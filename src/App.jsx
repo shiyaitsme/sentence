@@ -6,7 +6,6 @@ import { ExcerptList } from './components/ExcerptList'
 import { ExcerptForm } from './components/ExcerptForm'
 import { ExcerptDetail } from './components/ExcerptDetail'
 import { useExcerpts } from './hooks/useExcerpts'
-import { isSupabaseConfigured } from './lib/supabase'
 
 function matchesSearch(excerpt, query) {
   if (!query) return true
@@ -73,15 +72,16 @@ function App() {
     <div className="app-shell">
       <Header />
 
-      {!isSupabaseConfigured && (
-        <div className="config-banner">
-          尚未连接 Supabase：现在看到的是界面预览，摘录不会被保存。
-          请在项目根目录创建 <code>.env.local</code>，参考 <code>.env.example</code> 填入
-          <code>VITE_SUPABASE_URL</code> 和 <code>VITE_SUPABASE_ANON_KEY</code>，然后重启开发服务器。
+      {error && (
+        <div className="error-banner">
+          数据加载出错：{error}
+          {import.meta.env.DEV && (
+            <>
+              。本地开发要用 <code>npx wrangler pages dev</code>（而不是 <code>npm run dev</code>）才能连上本地 D1 数据库。
+            </>
+          )}
         </div>
       )}
-
-      {error && <div className="error-banner">数据加载出错：{error}</div>}
 
       <SearchBar value={search} onChange={setSearch} onAdd={() => setFormState('new')} />
 

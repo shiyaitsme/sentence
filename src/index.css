@@ -729,25 +729,7 @@ input {
   gap: 0.4rem;
 }
 
-/* ---------- config banner ---------- */
-
-.config-banner {
-  border: 1px dashed var(--ink);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--umber);
-  padding: 1rem 1.2rem;
-  border-radius: 2px;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
-}
-
-.config-banner code {
-  background: rgba(0, 0, 0, 0.08);
-  padding: 0.1rem 0.35rem;
-  border-radius: 2px;
-}
+/* ---------- error banner ---------- */
 
 .error-banner {
   border: 1px solid var(--ink);
@@ -757,7 +739,14 @@ input {
   border-radius: 2px;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
+  line-height: 1.55;
   box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.4);
+}
+
+.error-banner code {
+  background: rgba(0, 0, 0, 0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
 }
 
 .loading-text {
