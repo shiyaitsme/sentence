@@ -1,9 +1,7 @@
 import { useMemo, useState } from 'react'
-import { Header } from './components/Header'
-import { SearchBar } from './components/SearchBar'
-import { TagFilterBar } from './components/TagFilterBar'
-import { ExcerptList } from './components/ExcerptList'
-import { ExcerptForm } from './components/ExcerptForm'
+import { HomePage } from './components/HomePage'
+import { ExcerptListPage } from './components/ExcerptListPage'
+import { RecordPage } from './components/RecordPage'
 import { ExcerptDetail } from './components/ExcerptDetail'
 import { useExcerpts } from './hooks/useExcerpts'
 
@@ -18,9 +16,10 @@ function matchesSearch(excerpt, query) {
 
 function App() {
   const { excerpts, loading, error, addExcerpt, updateExcerpt, deleteExcerpt } = useExcerpts()
+  const [view, setView] = useState('home') // 'home' | 'list' | 'record'
   const [search, setSearch] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
-  const [formState, setFormState] = useState(null) // null | 'new' | excerpt object (edit)
+  const [editingExcerpt, setEditingExcerpt] = useState(null) // null = new
   const [detailExcerpt, setDetailExcerpt] = useState(null)
 
   const tagCounts = useMemo(() => {
@@ -52,67 +51,71 @@ function App() {
     )
   }
 
+  const handleNavigate = (nextView) => {
+    if (nextView === 'record') {
+      setEditingExcerpt(null)
+    }
+    setView(nextView)
+  }
+
+  const startEdit = (excerpt) => {
+    setDetailExcerpt(null)
+    setEditingExcerpt(excerpt)
+    setView('record')
+  }
+
   const handleSave = async (data) => {
-    if (formState && formState !== 'new') {
-      await updateExcerpt(formState.id, data)
+    if (editingExcerpt) {
+      await updateExcerpt(editingExcerpt.id, data)
     } else {
       await addExcerpt(data)
     }
-    setFormState(null)
+    setEditingExcerpt(null)
+    setView('list')
   }
 
   const handleDelete = async (excerpt) => {
     if (!window.confirm('确定要删除这条摘录吗？此操作无法撤销。')) return
     await deleteExcerpt(excerpt.id)
     setDetailExcerpt(null)
-    setFormState(null)
+    if (editingExcerpt?.id === excerpt.id) {
+      setEditingExcerpt(null)
+      setView('list')
+    }
   }
 
   return (
     <div className="app-shell">
-      <Header />
-
-      {error && (
-        <div className="error-banner">
-          数据加载出错：{error}
-          {import.meta.env.DEV && (
-            <>
-              。本地开发要用 <code>npx wrangler pages dev</code>（而不是 <code>npm run dev</code>）才能连上本地 D1 数据库。
-            </>
-          )}
-        </div>
+      {view === 'home' && (
+        <HomePage excerpts={excerpts} tagCounts={tagCounts} onNavigate={handleNavigate} />
       )}
 
-      <SearchBar value={search} onChange={setSearch} onAdd={() => setFormState('new')} />
-
-      <TagFilterBar
-        tagCounts={tagCounts}
-        selectedTags={selectedTags}
-        onToggle={toggleTag}
-        onClear={() => setSelectedTags([])}
-      />
-
-      {loading ? (
-        <p className="loading-text">正在打开摘抄本…</p>
-      ) : (
-        <ExcerptList
-          excerpts={filtered}
+      {view === 'list' && (
+        <ExcerptListPage
+          filtered={filtered}
           total={excerpts.length}
           hasFilters={hasFilters}
+          tagCounts={tagCounts}
+          selectedTags={selectedTags}
+          search={search}
+          onSearchChange={setSearch}
+          onToggleTag={toggleTag}
+          onClearTags={() => setSelectedTags([])}
+          onNavigate={handleNavigate}
           onOpen={setDetailExcerpt}
-          onEdit={(excerpt) => {
-            setDetailExcerpt(null)
-            setFormState(excerpt)
-          }}
+          onEdit={startEdit}
           onDelete={handleDelete}
+          loading={loading}
+          error={error}
         />
       )}
 
-      {formState && (
-        <ExcerptForm
-          initial={formState === 'new' ? null : formState}
+      {view === 'record' && (
+        <RecordPage
+          initial={editingExcerpt}
           onSave={handleSave}
-          onClose={() => setFormState(null)}
+          onCancel={() => setView('list')}
+          onNavigate={handleNavigate}
         />
       )}
 
@@ -120,10 +123,7 @@ function App() {
         <ExcerptDetail
           excerpt={detailExcerpt}
           onClose={() => setDetailExcerpt(null)}
-          onEdit={(excerpt) => {
-            setDetailExcerpt(null)
-            setFormState(excerpt)
-          }}
+          onEdit={startEdit}
           onDelete={handleDelete}
         />
       )}

@@ -1,0 +1,97 @@
+import { NavBar } from './NavBar'
+import { ExcerptCard } from './ExcerptCard'
+import { EmptyState } from './EmptyState'
+
+export function ExcerptListPage({
+  filtered,
+  total,
+  hasFilters,
+  tagCounts,
+  selectedTags,
+  search,
+  onSearchChange,
+  onToggleTag,
+  onClearTags,
+  onNavigate,
+  onOpen,
+  onEdit,
+  onDelete,
+  loading,
+  error,
+}) {
+  return (
+    <section className="list-page">
+      <NavBar current="list" onNavigate={onNavigate} variant="plain" />
+
+      {error && (
+        <div className="error-banner">
+          数据加载出错：{error}
+          {import.meta.env.DEV && (
+            <>
+              。本地开发要用 <code>npx wrangler pages dev</code>（而不是 <code>npm run dev</code>）才能连上本地 D1 数据库。
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="list-page-head">
+        <h1 className="list-title">摘抄集</h1>
+        <button type="button" className="btn-solid" onClick={() => onNavigate('record')}>
+          + 新建摘抄
+        </button>
+      </div>
+
+      <div className="filter-row">
+        <button
+          type="button"
+          className={`filter-pill${selectedTags.length === 0 ? ' active' : ''}`}
+          onClick={onClearTags}
+        >
+          全部
+        </button>
+        {tagCounts.map(([tag]) => (
+          <button
+            key={tag}
+            type="button"
+            className={`filter-pill${selectedTags.includes(tag) ? ' active' : ''}`}
+            onClick={() => onToggleTag(tag)}
+          >
+            {tag}
+          </button>
+        ))}
+        <div className="filter-search">
+          <span className="search-icon">⌕</span>
+          <input
+            type="text"
+            value={search}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="搜索正文、出处、标签、批注…"
+          />
+        </div>
+      </div>
+
+      {loading ? (
+        <p className="loading-text">正在打开摘抄本…</p>
+      ) : filtered.length === 0 ? (
+        <EmptyState hasFilters={hasFilters} />
+      ) : (
+        <>
+          <p className="results-count">
+            共 {filtered.length} 条{hasFilters ? ` · 全部 ${total} 条` : ''}
+          </p>
+          <div className="waterfall">
+            {filtered.map((excerpt) => (
+              <ExcerptCard
+                key={excerpt.id}
+                excerpt={excerpt}
+                onOpen={onOpen}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  )
+}
