@@ -105,7 +105,7 @@ input {
 .hero-page {
   position: relative;
   width: 100%;
-  min-height: clamp(600px, 34vw, 760px);
+  min-height: max(600px, 100vh);
   overflow: hidden;
   display: flex;
 }
