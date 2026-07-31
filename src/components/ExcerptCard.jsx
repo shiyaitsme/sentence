@@ -1,15 +1,17 @@
-import { TagBadge } from './TagBadge'
-import { formatDate } from '../lib/format'
+function tagVariant(tag) {
+  let hash = 0
+  for (let i = 0; i < tag.length; i += 1) {
+    hash = (hash + tag.charCodeAt(i)) % 2
+  }
+  return hash === 0 ? 'accent' : 'neutral'
+}
 
 export function ExcerptCard({ excerpt, onOpen, onEdit, onDelete }) {
-  return (
-    <article className="frame-card" onClick={() => onOpen(excerpt)}>
-      <span className="corner tl" />
-      <span className="corner tr" />
-      <span className="corner bl" />
-      <span className="corner br" />
+  const category = excerpt.tags?.[0]
 
-      <div className="card-actions">
+  return (
+    <article className="wf-card" onClick={() => onOpen(excerpt)}>
+      <div className="wf-card-actions">
         <button
           type="button"
           className="icon-btn"
@@ -34,20 +36,14 @@ export function ExcerptCard({ excerpt, onOpen, onEdit, onDelete }) {
         </button>
       </div>
 
-      <div className="content">{excerpt.content}</div>
+      <div className="wf-content">{excerpt.content}</div>
 
-      <div className="meta-row">
-        <span className="source">{excerpt.source || '出处未记'}</span>
-        <span>{formatDate(excerpt.created_at)}</span>
+      {excerpt.note && <div className="wf-note">{excerpt.note}</div>}
+
+      <div className="wf-footer">
+        <span className="wf-source">{excerpt.source || '出处未记'}</span>
+        {category && <span className={`card-tag card-tag--${tagVariant(category)}`}>{category}</span>}
       </div>
-
-      {excerpt.tags?.length > 0 && (
-        <div className="tag-row">
-          {excerpt.tags.map((tag) => (
-            <TagBadge key={tag} tag={tag} />
-          ))}
-        </div>
-      )}
     </article>
   )
 }
