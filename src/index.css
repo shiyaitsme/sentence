@@ -62,7 +62,7 @@ input {
 .nav-logo {
   font-family: 'Bodoni Moda', 'Noto Serif SC', serif;
   font-weight: 700;
-  font-size: 22px;
+  font-size: clamp(19px, 1.4vw, 24px);
 }
 
 .nav-links {
@@ -76,7 +76,7 @@ input {
   cursor: pointer;
   padding: 0;
   font-family: 'Oswald', 'Noto Sans SC', sans-serif;
-  font-size: 12px;
+  font-size: clamp(11px, 0.85vw, 13px);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   transition: color 0.15s;
@@ -105,7 +105,7 @@ input {
 .hero-page {
   position: relative;
   width: 100%;
-  min-height: 600px;
+  min-height: clamp(600px, 34vw, 760px);
   overflow: hidden;
   display: flex;
 }
@@ -136,9 +136,16 @@ input {
   z-index: 1;
   width: 100%;
   display: flex;
+  justify-content: center;
+  padding: 26px 44px 32px;
+}
+
+.hero-content {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 26px 44px 32px;
 }
 
 .hero-main {
@@ -149,7 +156,7 @@ input {
 
 .hero-eyebrow {
   font-family: 'Oswald', 'Noto Sans SC', sans-serif;
-  font-size: 10.5px;
+  font-size: clamp(10px, 0.75vw, 11.5px);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--blush);
@@ -159,7 +166,7 @@ input {
 .hero-title {
   font-family: 'Noto Serif SC', serif;
   font-weight: 600;
-  font-size: 34px;
+  font-size: clamp(30px, 3.6vw, 44px);
   line-height: 1.3;
   letter-spacing: 0.03em;
   color: var(--cream);
@@ -169,7 +176,7 @@ input {
 
 .hero-script {
   font-family: 'Petit Formal Script', cursive;
-  font-size: 19px;
+  font-size: clamp(17px, 1.6vw, 22px);
   color: var(--blush);
   margin: 0 0 2rem;
 }
@@ -182,7 +189,7 @@ input {
 
 .hero-footer-label {
   font-family: 'Oswald', 'Noto Sans SC', sans-serif;
-  font-size: 10.5px;
+  font-size: clamp(10px, 0.75vw, 11.5px);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--blush);
@@ -191,10 +198,10 @@ input {
 
 .hero-quote {
   font-family: 'Noto Serif SC', serif;
-  font-size: 17px;
+  font-size: clamp(15px, 1.2vw, 19px);
   line-height: 1.8;
   color: var(--cream);
-  max-width: 560px;
+  max-width: 640px;
   margin: 0 0 0.9rem;
 }
 
@@ -213,7 +220,7 @@ input {
 
 .hero-footer-source {
   color: rgba(246, 236, 226, 0.65);
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 0.75vw, 1rem);
 }
 
 .hero-stats {
@@ -228,13 +235,13 @@ input {
 .hero-stat-num {
   display: block;
   font-family: 'Bodoni Moda', serif;
-  font-size: 18px;
+  font-size: clamp(17px, 1.3vw, 21px);
   color: var(--cream);
 }
 
 .hero-stat-label {
   font-family: 'Oswald', 'Noto Sans SC', sans-serif;
-  font-size: 9px;
+  font-size: clamp(8.5px, 0.65vw, 10px);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--blush);
@@ -277,8 +284,8 @@ input {
 
 .hero-actions .btn-solid,
 .hero-actions .btn-outline-hero {
-  padding: 11px 24px;
-  font-size: 12px;
+  padding: clamp(10px, 0.8vw, 13px) clamp(20px, 1.8vw, 28px);
+  font-size: clamp(11px, 0.85vw, 13px);
 }
 
 .btn-outline-hero {
