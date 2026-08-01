@@ -336,12 +336,19 @@ input {
   margin: 0;
 }
 
+.filter-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
 .filter-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .filter-pill {
@@ -359,6 +366,63 @@ input {
   background: var(--blush);
   border-color: var(--blush);
   color: var(--ink-on-blush);
+}
+
+.filter-group-trigger {
+  padding: 8px 18px;
+  border-radius: 18px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: 1px solid rgba(42, 59, 77, 0.28);
+  background: transparent;
+  color: #3d4a56;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s;
+}
+
+.filter-group-trigger.open {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--card);
+}
+
+.filter-group-caret {
+  opacity: 0.55;
+  margin-left: 6px;
+  font-size: 9px;
+}
+
+.filter-subrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-subrow-empty {
+  font-size: 0.8rem;
+  color: var(--slate);
+}
+
+.filter-subchip {
+  padding: 7px 16px;
+  border-radius: 16px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border: 1px solid rgba(92, 115, 135, 0.5);
+  background: transparent;
+  color: #5c7387;
+  transition: all 0.15s;
+}
+
+.filter-subchip.selected {
+  background: rgba(143, 167, 187, 0.28);
+  border-color: var(--slate);
+  color: var(--navy);
 }
 
 .filter-search {

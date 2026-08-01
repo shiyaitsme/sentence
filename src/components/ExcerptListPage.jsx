@@ -6,11 +6,16 @@ export function ExcerptListPage({
   filtered,
   total,
   hasFilters,
-  tagCounts,
-  selectedTags,
+  countryTagCounts,
+  topicTagCounts,
+  selectedCountryTags,
+  selectedTopicTags,
+  openFilterGroup,
+  onToggleFilterGroup,
   search,
   onSearchChange,
-  onToggleTag,
+  onToggleCountryTag,
+  onToggleTopicTag,
   onClearTags,
   onNavigate,
   onOpen,
@@ -19,6 +24,7 @@ export function ExcerptListPage({
   loading,
   error,
 }) {
+  const hasTagFilters = selectedCountryTags.length > 0 || selectedTopicTags.length > 0
   return (
     <section className="list-page">
       <NavBar current="list" onNavigate={onNavigate} variant="plain" />
@@ -41,33 +47,79 @@ export function ExcerptListPage({
         </button>
       </div>
 
-      <div className="filter-row">
-        <button
-          type="button"
-          className={`filter-pill${selectedTags.length === 0 ? ' active' : ''}`}
-          onClick={onClearTags}
-        >
-          全部
-        </button>
-        {tagCounts.map(([tag]) => (
+      <div className="filter-block">
+        <div className="filter-row">
           <button
-            key={tag}
             type="button"
-            className={`filter-pill${selectedTags.includes(tag) ? ' active' : ''}`}
-            onClick={() => onToggleTag(tag)}
+            className={`filter-pill${!hasTagFilters ? ' active' : ''}`}
+            onClick={onClearTags}
           >
-            {tag}
+            全部
           </button>
-        ))}
-        <div className="filter-search">
-          <span className="search-icon">⌕</span>
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="搜索正文、出处、标签、批注…"
-          />
+          <button
+            type="button"
+            className={`filter-group-trigger${openFilterGroup === 'country' ? ' open' : ''}`}
+            onClick={() => onToggleFilterGroup('country')}
+          >
+            国家 / 时期
+            <span className="filter-group-caret">{openFilterGroup === 'country' ? '▴' : '▾'}</span>
+          </button>
+          <button
+            type="button"
+            className={`filter-group-trigger${openFilterGroup === 'topic' ? ' open' : ''}`}
+            onClick={() => onToggleFilterGroup('topic')}
+          >
+            标签
+            <span className="filter-group-caret">{openFilterGroup === 'topic' ? '▴' : '▾'}</span>
+          </button>
+          <div className="filter-search">
+            <span className="search-icon">⌕</span>
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => onSearchChange(event.target.value)}
+              placeholder="搜索正文、出处、标签、批注…"
+            />
+          </div>
         </div>
+
+        {openFilterGroup === 'country' && (
+          <div className="filter-subrow">
+            {countryTagCounts.length === 0 ? (
+              <span className="filter-subrow-empty">暂无国家/时期标签</span>
+            ) : (
+              countryTagCounts.map(([tag]) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className={`filter-subchip${selectedCountryTags.includes(tag) ? ' selected' : ''}`}
+                  onClick={() => onToggleCountryTag(tag)}
+                >
+                  {tag}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+
+        {openFilterGroup === 'topic' && (
+          <div className="filter-subrow">
+            {topicTagCounts.length === 0 ? (
+              <span className="filter-subrow-empty">暂无标签</span>
+            ) : (
+              topicTagCounts.map(([tag]) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className={`filter-subchip${selectedTopicTags.includes(tag) ? ' selected' : ''}`}
+                  onClick={() => onToggleTopicTag(tag)}
+                >
+                  {tag}
+                </button>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {loading ? (
