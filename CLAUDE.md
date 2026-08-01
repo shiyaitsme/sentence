@@ -47,7 +47,7 @@ src/hooks/useExcerpts.js  --fetch-->  functions/api/excerpts/index.js   (GET lis
 
 The app has three views switched by local state in `App.jsx` (`view: 'home' | 'list' | 'record'`), not a router:
 
-- **`HomePage`** (`'home'`, the default) — full-bleed 600px-tall hero band using `public/landing_page.png` as a cover photo with a dark gradient overlay, a centered headline + two CTAs, and a "今日一句" footer strip showing the most recent excerpt plus live counts (excerpts / distinct sources / distinct tags).
+- **`HomePage`** (`'home'`, the default) — full-viewport-height (`min-height: max(600px, 100vh)`, so it always fills the first screen with no leftover blank strip below it) hero band using `public/landing_page.png` as a cover photo with a dark gradient overlay, a centered headline + two CTAs, and a "今日一句" footer strip showing the most recent excerpt plus live counts (excerpts / distinct sources / distinct tags). Hero content is wrapped in `.hero-content` (max-width 1400px, centered) and key type sizes use `clamp()` rather than fixed px — both exist because the design was authored on an ~860px canvas, and without them the hero looks disproportionately small and the background photo crops far more aggressively on wide/ultra-wide viewports.
 - **`ExcerptListPage`** (`'list'`) — "摘抄集": title + "+ 新建摘抄", a filter-pill row (dynamic, derived from `tagCounts`) plus a search box, and a CSS `columns`-based waterfall of `ExcerptCard`s. Clicking a card opens `ExcerptDetail` as a modal (view/edit/delete).
 - **`RecordPage`** (`'record'`) — "记录": the create/edit form (content, source, note, a removable tag-chip editor with a "+ 添加标签" input, and a decorative image dropzone that only previews client-side via `FileReader` — there's no image upload/storage in the backend, so nothing here is persisted to D1).
 
@@ -62,3 +62,12 @@ The UI follows a warm ink-and-blush palette (not monochrome): deep navy for text
 - No picture-frame/corner-ornament chrome anymore — cards (`.wf-card`, `.modal-card`) are plain rounded rectangles (`border-radius: 14–16px`) with a soft shadow, no border.
 - Reusable pill/chip patterns: `.filter-pill` (list page tag filters, `.active` = blush fill), `.card-tag` (waterfall card footer category tag, `--accent`/`--neutral` color variants picked deterministically per tag via a hash in `ExcerptCard.jsx`), `.tag-chip` (record page's removable tag editor). Don't reuse one for another context — the selected/unselected color rules differ slightly per spec.
 - The hero band (`.hero-page`/`.hero-inner`) is the only place `nav-row--overlay` (light text, text-shadow, translucent borders) is used; every other view uses `nav-row--plain` and normal dark-on-light text since their background is the flat `--bg` cream, not a photo.
+
+## PWA (iOS-focused)
+
+The app is installable to an iOS home screen, but there's no build-time PWA tooling (no Workbox/vite-plugin-pwa) — everything is hand-written and lives in `public/` so Vite copies it to `dist/` unchanged:
+
+- `public/manifest.json` — name/icons/`display: standalone`/theme colors. Note iOS Safari mostly **ignores** this for install eligibility (there's no Android-style install prompt); it's there for spec-completeness and any future Android support.
+- What actually drives the iOS experience is in `index.html`: `<link rel="apple-touch-icon">` (three sizes: 180/167/152) and the `apple-mobile-web-app-capable` / `apple-mobile-web-app-status-bar-style` / `apple-mobile-web-app-title` meta tags. Users install via Safari's share sheet → "添加到主屏幕" (no auto-prompt).
+- `public/icons/icon-*.png` are generated (not hand-drawn) from `public/sentence_logo_v2.png` composited onto the `--card` cream color at each size — see the one-off script used to make them if new sizes are ever needed (resize the star mark with padding, flatten onto an opaque square; iOS icons should not be transparent).
+- `public/sw.js` is a minimal hand-written service worker (network-first, falls back to cache when offline) registered from `src/main.jsx` on `window.load`. It explicitly skips caching anything under `/api/` — excerpt data is dynamic and there's no auth, so a stale cached API response would be actively misleading. There's no precache list keyed to Vite's hashed build filenames (that's what tools like Workbox are for); it only caches what's actually been fetched at runtime.
