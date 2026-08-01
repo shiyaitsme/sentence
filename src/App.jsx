@@ -4,6 +4,7 @@ import { ExcerptListPage } from './components/ExcerptListPage'
 import { RecordPage } from './components/RecordPage'
 import { ExcerptDetail } from './components/ExcerptDetail'
 import { useExcerpts } from './hooks/useExcerpts'
+import { splitTagGroups } from './lib/tagGroups'
 
 function matchesSearch(excerpt, query) {
   if (!query) return true
@@ -18,7 +19,9 @@ function App() {
   const { excerpts, loading, error, addExcerpt, updateExcerpt, deleteExcerpt } = useExcerpts()
   const [view, setView] = useState('home') // 'home' | 'list' | 'record'
   const [search, setSearch] = useState('')
-  const [selectedTags, setSelectedTags] = useState([])
+  const [selectedCountryTags, setSelectedCountryTags] = useState([])
+  const [selectedTopicTags, setSelectedTopicTags] = useState([])
+  const [openFilterGroup, setOpenFilterGroup] = useState(null) // 'country' | 'topic' | null
   const [editingExcerpt, setEditingExcerpt] = useState(null) // null = new
   const [detailExcerpt, setDetailExcerpt] = useState(null)
 
@@ -32,23 +35,41 @@ function App() {
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   }, [excerpts])
 
+  const { countryTagCounts, topicTagCounts } = useMemo(() => splitTagGroups(tagCounts), [tagCounts])
+
   const filtered = useMemo(() => {
+    const activeTags = [...selectedCountryTags, ...selectedTopicTags]
     return excerpts.filter((excerpt) => {
       if (!matchesSearch(excerpt, search)) return false
-      if (selectedTags.length > 0) {
+      if (activeTags.length > 0) {
         const tags = excerpt.tags ?? []
-        if (!selectedTags.every((tag) => tags.includes(tag))) return false
+        if (!activeTags.every((tag) => tags.includes(tag))) return false
       }
       return true
     })
-  }, [excerpts, search, selectedTags])
+  }, [excerpts, search, selectedCountryTags, selectedTopicTags])
 
-  const hasFilters = Boolean(search) || selectedTags.length > 0
+  const hasFilters = Boolean(search) || selectedCountryTags.length > 0 || selectedTopicTags.length > 0
 
-  const toggleTag = (tag) => {
-    setSelectedTags((prev) =>
+  const toggleCountryTag = (tag) => {
+    setSelectedCountryTags((prev) =>
       prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag],
     )
+  }
+
+  const toggleTopicTag = (tag) => {
+    setSelectedTopicTags((prev) =>
+      prev.includes(tag) ? prev.filter((item) => item !== tag) : [...prev, tag],
+    )
+  }
+
+  const toggleFilterGroup = (group) => {
+    setOpenFilterGroup((prev) => (prev === group ? null : group))
+  }
+
+  const clearTagFilters = () => {
+    setSelectedCountryTags([])
+    setSelectedTopicTags([])
   }
 
   const handleNavigate = (nextView) => {
@@ -95,12 +116,17 @@ function App() {
           filtered={filtered}
           total={excerpts.length}
           hasFilters={hasFilters}
-          tagCounts={tagCounts}
-          selectedTags={selectedTags}
+          countryTagCounts={countryTagCounts}
+          topicTagCounts={topicTagCounts}
+          selectedCountryTags={selectedCountryTags}
+          selectedTopicTags={selectedTopicTags}
+          openFilterGroup={openFilterGroup}
+          onToggleFilterGroup={toggleFilterGroup}
           search={search}
           onSearchChange={setSearch}
-          onToggleTag={toggleTag}
-          onClearTags={() => setSelectedTags([])}
+          onToggleCountryTag={toggleCountryTag}
+          onToggleTopicTag={toggleTopicTag}
+          onClearTags={clearTagFilters}
           onNavigate={handleNavigate}
           onOpen={setDetailExcerpt}
           onEdit={startEdit}
