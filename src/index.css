@@ -616,6 +616,7 @@ input {
   grid-column: 2;
   grid-row: 1;
   display: flex;
+  margin-top: 1.76rem; /* label line-height (0.85rem * 1.6) + .field gap, so the box top lines up with the content textarea's top, not the label above it */
 }
 
 .record-form-bottom {
