@@ -625,6 +625,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  width: 100%;
 }
 
 .field label {
@@ -635,6 +636,8 @@ input {
 
 .field textarea,
 .field input {
+  width: 100%;
+  box-sizing: border-box;
   background: var(--card);
   border: none;
   border-radius: 12px;
