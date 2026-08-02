@@ -63,7 +63,7 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
       </div>
 
       <form className="record-body" onSubmit={handleSubmit}>
-        <div className="record-form">
+        <div className="record-fields-top">
           <div className="field">
             <label htmlFor="content">原文内容 *</label>
             <textarea
@@ -98,7 +98,24 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
               placeholder="当时的想法…"
             />
           </div>
+        </div>
 
+        <div className="record-upload">
+          <label className="upload-box">
+            <input type="file" accept="image/*" onChange={handleFile} hidden />
+            {preview ? (
+              <img src={preview} alt="预览" className="upload-preview" />
+            ) : (
+              <span className="upload-hint">
+                点击上传配图
+                <br />
+                （可选，仅本设备预览）
+              </span>
+            )}
+          </label>
+        </div>
+
+        <div className="record-form-bottom">
           <div className="field">
             <label>标签</label>
             <div className="tag-editor">
@@ -143,21 +160,6 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
               {saving ? '保存中…' : isEdit ? '保存修改' : '保存摘抄'}
             </button>
           </div>
-        </div>
-
-        <div className="record-upload">
-          <label className="upload-box">
-            <input type="file" accept="image/*" onChange={handleFile} hidden />
-            {preview ? (
-              <img src={preview} alt="预览" className="upload-preview" />
-            ) : (
-              <span className="upload-hint">
-                点击上传配图
-                <br />
-                （可选，仅本设备预览）
-              </span>
-            )}
-          </label>
         </div>
       </form>
     </section>
