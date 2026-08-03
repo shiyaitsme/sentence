@@ -629,6 +629,7 @@ input {
   grid-row: 2;
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .record-bottom-actions {
@@ -741,15 +742,14 @@ input {
 }
 
 .ai-prompt-pill {
-  width: 100%;
   border: 1.5px dashed rgba(42, 59, 77, 0.3);
   background: none;
   border-radius: 14px;
-  padding: 0.5rem 0.8rem;
+  padding: 0.3rem 0.8rem;
   font-size: 0.82rem;
   color: var(--slate);
   cursor: pointer;
-  text-align: center;
+  white-space: nowrap;
   transition: border-color 0.15s, color 0.15s;
 }
 
@@ -998,6 +998,7 @@ input {
   .record-prompt-row {
     grid-column: 1;
     grid-row: 4;
+    justify-content: flex-start;
   }
 
   .record-bottom-actions {
