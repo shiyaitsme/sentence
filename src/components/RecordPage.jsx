@@ -1,6 +1,36 @@
 import { useState } from 'react'
 import { NavBar } from './NavBar'
+import { AiPromptModal } from './AiPromptModal'
 import { splitTags } from '../lib/format'
+
+const AI_PROMPT_STORAGE_KEY = 'sentence:ai-prompt'
+
+const DEFAULT_AI_PROMPT = `按我的「sentence」摘抄本格式提取这张图里的内容，直接给我可粘贴的字段：
+
+【原文内容】
+- 若为外文，先给原文，再给中文译文（两行并列）
+- 图里的译文若有偏差或丢失了原意，指出来并给你的版本，不要沿用错译
+- 只保留正文，去掉图片的标题、水印、营销语
+
+【出处】
+格式：《作品名》· 作者。若图中未标或标错，你来补全或纠正；确实查不到就写"待考"，不要编
+
+【个人感想 / 批注】
+不要替我写感受。给我两三句写作/阅读背景：创作时间、处境、关键词的语感或典故——能让我自己想出批注的那种材料
+
+【标签】
+3-5 个，中文，从体裁 / 母题 / 作者 / 语言文化圈里选
+
+最后附一句：这段值不值得收，或者有没有更好的同源版本。
+不要客套，不要总结我的需求，直接出字段。`
+
+function loadStoredPrompt() {
+  try {
+    return localStorage.getItem(AI_PROMPT_STORAGE_KEY) ?? DEFAULT_AI_PROMPT
+  } catch {
+    return DEFAULT_AI_PROMPT
+  }
+}
 
 export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
   const isEdit = Boolean(initial)
@@ -13,6 +43,17 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
   const [preview, setPreview] = useState(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [aiPrompt, setAiPrompt] = useState(loadStoredPrompt)
+  const [promptModalOpen, setPromptModalOpen] = useState(false)
+
+  const saveAiPrompt = (next) => {
+    setAiPrompt(next)
+    try {
+      localStorage.setItem(AI_PROMPT_STORAGE_KEY, next)
+    } catch {
+      /* localStorage unavailable (e.g. private mode) — keep the in-memory value only */
+    }
+  }
 
   const commitTagDraft = () => {
     const next = splitTags(tagDraft)
@@ -115,41 +156,47 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
           </label>
         </div>
 
-        <div className="record-form-bottom">
-          <div className="field">
-            <label>标签</label>
-            <div className="tag-editor">
-              {tags.map((tag) => (
-                <span key={tag} className="tag-chip">
-                  {tag}
-                  <button type="button" onClick={() => removeTag(tag)} aria-label={`移除标签 ${tag}`}>
-                    ×
-                  </button>
-                </span>
-              ))}
-              {addingTag ? (
-                <input
-                  className="tag-draft-input"
-                  autoFocus
-                  value={tagDraft}
-                  onChange={(event) => setTagDraft(event.target.value)}
-                  onBlur={commitTagDraft}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault()
-                      commitTagDraft()
-                    }
-                  }}
-                  placeholder="输入标签，回车确认"
-                />
-              ) : (
-                <button type="button" className="tag-add-btn" onClick={() => setAddingTag(true)}>
-                  + 添加标签
+        <div className="field record-tags-field">
+          <label>标签</label>
+          <div className="tag-editor">
+            {tags.map((tag) => (
+              <span key={tag} className="tag-chip">
+                {tag}
+                <button type="button" onClick={() => removeTag(tag)} aria-label={`移除标签 ${tag}`}>
+                  ×
                 </button>
-              )}
-            </div>
+              </span>
+            ))}
+            {addingTag ? (
+              <input
+                className="tag-draft-input"
+                autoFocus
+                value={tagDraft}
+                onChange={(event) => setTagDraft(event.target.value)}
+                onBlur={commitTagDraft}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    commitTagDraft()
+                  }
+                }}
+                placeholder="输入标签，回车确认"
+              />
+            ) : (
+              <button type="button" className="tag-add-btn" onClick={() => setAddingTag(true)}>
+                + 添加标签
+              </button>
+            )}
           </div>
+        </div>
 
+        <div className="record-prompt-row">
+          <button type="button" className="ai-prompt-pill" onClick={() => setPromptModalOpen(true)}>
+            AI 提取 Prompt
+          </button>
+        </div>
+
+        <div className="record-bottom-actions">
           {error && <p className="form-error">{error}</p>}
 
           <div className="record-actions">
@@ -162,6 +209,14 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
           </div>
         </div>
       </form>
+
+      {promptModalOpen && (
+        <AiPromptModal
+          prompt={aiPrompt}
+          onClose={() => setPromptModalOpen(false)}
+          onSave={saveAiPrompt}
+        />
+      )}
     </section>
   )
 }

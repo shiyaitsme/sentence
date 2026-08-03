@@ -619,9 +619,21 @@ input {
   margin-top: 1.76rem; /* label line-height (0.85rem * 1.6) + .field gap, so the box top lines up with the content textarea's top, not the label above it */
 }
 
-.record-form-bottom {
-  grid-column: 1 / -1;
+.record-tags-field {
+  grid-column: 1;
   grid-row: 2;
+}
+
+.record-prompt-row {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: flex-end;
+}
+
+.record-bottom-actions {
+  grid-column: 1 / -1;
+  grid-row: 3;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -726,6 +738,24 @@ input {
   justify-content: flex-end;
   gap: 0.8rem;
   margin-top: 0.5rem;
+}
+
+.ai-prompt-pill {
+  width: 100%;
+  border: 1.5px dashed rgba(42, 59, 77, 0.3);
+  background: none;
+  border-radius: 14px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  color: var(--slate);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ai-prompt-pill:hover {
+  border-color: var(--navy);
+  color: var(--navy);
 }
 
 .upload-box {
@@ -841,6 +871,46 @@ input {
   margin-top: 1.4rem;
 }
 
+.prompt-modal-title {
+  font-family: 'Bodoni Moda', 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--navy);
+  margin: 0 0 1rem;
+}
+
+.prompt-text {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--navy);
+  background: rgba(42, 59, 77, 0.04);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.prompt-edit-area {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--card);
+  border: 1px solid rgba(42, 59, 77, 0.15);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  font-size: 0.9rem;
+  color: var(--navy);
+  line-height: 1.7;
+  outline: none;
+  resize: vertical;
+  min-height: 320px;
+}
+
+.prompt-edit-area:focus {
+  box-shadow: 0 0 0 2px rgba(42, 59, 77, 0.2);
+}
+
 .tag-badge {
   display: inline-flex;
   align-items: center;
@@ -917,11 +987,22 @@ input {
   .record-upload {
     grid-column: 1;
     grid-row: 2;
+    margin-top: 0;
   }
 
-  .record-form-bottom {
+  .record-tags-field {
     grid-column: 1;
     grid-row: 3;
+  }
+
+  .record-prompt-row {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .record-bottom-actions {
+    grid-column: 1;
+    grid-row: 5;
   }
 
   .upload-box {
