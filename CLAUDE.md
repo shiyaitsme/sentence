@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm install
 npm run dev:full          # full stack: Pages Functions + local D1, via wrangler — use this, not `npm run dev`
 npm run db:local:init     # one-time: create local D1 tables from d1/schema.sql
+npm run db:local:migrate  # one-off: apply d1/migrations/0001_add_author.sql to a local DB created before the author column existed
 npm run build             # vite build → dist/
 npm run lint              # oxlint
 ```

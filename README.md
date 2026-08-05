@@ -47,5 +47,6 @@ src/
 functions/
   api/excerpts/ Cloudflare Pages Functions，读写 D1 数据库的接口
 d1/
-  schema.sql    数据表结构
+  schema.sql      数据表结构
+  migrations/     给已存在的旧数据库补字段用的一次性迁移脚本
 ```
