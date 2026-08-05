@@ -676,6 +676,11 @@ input {
   min-height: 110px;
 }
 
+.field textarea.autosize {
+  resize: none;
+  overflow: hidden;
+}
+
 .field textarea::placeholder,
 .field input::placeholder {
   color: #a9bbca;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavBar } from './NavBar'
 import { AiPromptModal } from './AiPromptModal'
 import { splitTags } from '../lib/format'
@@ -13,7 +13,10 @@ const DEFAULT_AI_PROMPT = `按我的「sentence」摘抄本格式提取这张图
 - 只保留正文，去掉图片的标题、水印、营销语
 
 【出处】
-格式：《作品名》· 作者。若图中未标或标错，你来补全或纠正；确实查不到就写"待考"，不要编
+格式：《作品名》。若图中未标或标错，你来补全或纠正；确实查不到就写"待考"，不要编
+
+【作者】
+若图中未标或标错，你来补全或纠正；确实查不到就写"待考"，不要编
 
 【个人感想 / 批注】
 不要替我写感受。给我两三句写作/阅读背景：创作时间、处境、关键词的语感或典故——能让我自己想出批注的那种材料
@@ -36,7 +39,9 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
   const isEdit = Boolean(initial)
   const [content, setContent] = useState(initial?.content ?? '')
   const [source, setSource] = useState(initial?.source ?? '')
+  const [author, setAuthor] = useState(initial?.author ?? '')
   const [note, setNote] = useState(initial?.note ?? '')
+  const noteRef = useRef(null)
   const [tags, setTags] = useState(initial?.tags ?? [])
   const [tagDraft, setTagDraft] = useState('')
   const [addingTag, setAddingTag] = useState(false)
@@ -54,6 +59,13 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
       /* localStorage unavailable (e.g. private mode) — keep the in-memory value only */
     }
   }
+
+  useEffect(() => {
+    const el = noteRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }, [note])
 
   const commitTagDraft = () => {
     const next = splitTags(tagDraft)
@@ -85,7 +97,7 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
     setSaving(true)
     setError(null)
     try {
-      await onSave({ content, source, tagsInput: tags.join(', '), note })
+      await onSave({ content, source, author, tagsInput: tags.join(', '), note })
     } catch (err) {
       setError(err.message || '保存失败，请重试')
       setSaving(false)
@@ -130,9 +142,22 @@ export function RecordPage({ initial, onSave, onCancel, onNavigate }) {
           </div>
 
           <div className="field">
+            <label htmlFor="author">作者</label>
+            <input
+              id="author"
+              type="text"
+              value={author}
+              onChange={(event) => setAuthor(event.target.value)}
+              placeholder="如 林之遥"
+            />
+          </div>
+
+          <div className="field">
             <label htmlFor="note">个人感想 / 批注</label>
             <textarea
               id="note"
+              ref={noteRef}
+              className="autosize"
               rows={3}
               value={note}
               onChange={(event) => setNote(event.target.value)}

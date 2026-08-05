@@ -13,6 +13,7 @@ export function ExcerptDetail({ excerpt, onClose, onEdit, onDelete }) {
 
         <div className="detail-meta">
           {excerpt.source && <div>出处：{excerpt.source}</div>}
+          {excerpt.author && <div>作者：{excerpt.author}</div>}
           <div>记于 {formatDate(excerpt.created_at)}</div>
         </div>
 

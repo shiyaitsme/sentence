@@ -8,14 +8,17 @@ export function ExcerptListPage({
   hasFilters,
   countryTagCounts,
   topicTagCounts,
+  authorCounts,
   selectedCountryTags,
   selectedTopicTags,
+  selectedAuthors,
   openFilterGroup,
   onToggleFilterGroup,
   search,
   onSearchChange,
   onToggleCountryTag,
   onToggleTopicTag,
+  onToggleAuthor,
   onClearTags,
   onNavigate,
   onOpen,
@@ -24,7 +27,8 @@ export function ExcerptListPage({
   loading,
   error,
 }) {
-  const hasTagFilters = selectedCountryTags.length > 0 || selectedTopicTags.length > 0
+  const hasTagFilters =
+    selectedCountryTags.length > 0 || selectedTopicTags.length > 0 || selectedAuthors.length > 0
   return (
     <section className="list-page">
       <NavBar current="list" onNavigate={onNavigate} variant="plain" />
@@ -66,6 +70,14 @@ export function ExcerptListPage({
           </button>
           <button
             type="button"
+            className={`filter-group-trigger${openFilterGroup === 'author' ? ' open' : ''}`}
+            onClick={() => onToggleFilterGroup('author')}
+          >
+            作者
+            <span className="filter-group-caret">{openFilterGroup === 'author' ? '▴' : '▾'}</span>
+          </button>
+          <button
+            type="button"
             className={`filter-group-trigger${openFilterGroup === 'topic' ? ' open' : ''}`}
             onClick={() => onToggleFilterGroup('topic')}
           >
@@ -96,6 +108,25 @@ export function ExcerptListPage({
                   onClick={() => onToggleCountryTag(tag)}
                 >
                   {tag}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+
+        {openFilterGroup === 'author' && (
+          <div className="filter-subrow">
+            {authorCounts.length === 0 ? (
+              <span className="filter-subrow-empty">暂无作者</span>
+            ) : (
+              authorCounts.map(([author]) => (
+                <button
+                  key={author}
+                  type="button"
+                  className={`filter-subchip${selectedAuthors.includes(author) ? ' selected' : ''}`}
+                  onClick={() => onToggleAuthor(author)}
+                >
+                  {author}
                 </button>
               ))
             )}

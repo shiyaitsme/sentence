@@ -9,7 +9,8 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "db:local:init": "wrangler d1 execute sentence-db --local --file=./d1/schema.sql"
+    "db:local:init": "wrangler d1 execute sentence-db --local --file=./d1/schema.sql",
+    "db:local:migrate": "wrangler d1 execute sentence-db --local --file=./d1/migrations/0001_add_author.sql"
   },
   "dependencies": {
     "react": "^19.2.7",

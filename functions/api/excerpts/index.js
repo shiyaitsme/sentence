@@ -18,10 +18,10 @@ export async function onRequestPost({ request, env }) {
   const now = new Date().toISOString()
 
   await env.DB.prepare(
-    `INSERT INTO excerpts (id, content, source, tags, note, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO excerpts (id, content, source, author, tags, note, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   )
-    .bind(id, row.content, row.source, row.tags, row.note, now, now)
+    .bind(id, row.content, row.source, row.author, row.tags, row.note, now, now)
     .run()
 
   return jsonResponse(fromDbRow({ id, ...row, created_at: now, updated_at: now }), { status: 201 })

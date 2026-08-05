@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS excerpts (
   id TEXT PRIMARY KEY,
   content TEXT NOT NULL,
   source TEXT,
+  author TEXT,
   tags TEXT NOT NULL DEFAULT '[]', -- JSON array of strings, e.g. ["韩国","诗"]
   note TEXT,
   created_at TEXT NOT NULL,

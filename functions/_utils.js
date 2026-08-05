@@ -9,10 +9,11 @@ export function parseTags(raw) {
   )
 }
 
-export function toExcerptRow({ content, source, tagsInput, note }) {
+export function toExcerptRow({ content, source, author, tagsInput, note }) {
   return {
     content: String(content ?? '').trim(),
     source: source?.trim() || null,
+    author: author?.trim() || null,
     note: note?.trim() || null,
     tags: JSON.stringify(parseTags(tagsInput)),
   }

@@ -34,11 +34,11 @@ export function useExcerpts() {
     fetchExcerpts()
   }, [fetchExcerpts])
 
-  const addExcerpt = useCallback(async ({ content, source, tagsInput, note }) => {
+  const addExcerpt = useCallback(async ({ content, source, author, tagsInput, note }) => {
     const response = await fetch(API_BASE, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ content, source, tagsInput, note }),
+      body: JSON.stringify({ content, source, author, tagsInput, note }),
     })
     if (!response.ok) throw new Error(await parseErrorMessage(response))
     const data = await response.json()
@@ -46,11 +46,11 @@ export function useExcerpts() {
     return data
   }, [])
 
-  const updateExcerpt = useCallback(async (id, { content, source, tagsInput, note }) => {
+  const updateExcerpt = useCallback(async (id, { content, source, author, tagsInput, note }) => {
     const response = await fetch(`${API_BASE}/${id}`, {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ content, source, tagsInput, note }),
+      body: JSON.stringify({ content, source, author, tagsInput, note }),
     })
     if (!response.ok) throw new Error(await parseErrorMessage(response))
     const data = await response.json()

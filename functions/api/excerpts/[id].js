@@ -10,10 +10,10 @@ export async function onRequestPut({ request, env, params }) {
   const now = new Date().toISOString()
 
   const result = await env.DB.prepare(
-    `UPDATE excerpts SET content = ?, source = ?, tags = ?, note = ?, updated_at = ?
+    `UPDATE excerpts SET content = ?, source = ?, author = ?, tags = ?, note = ?, updated_at = ?
      WHERE id = ?`,
   )
-    .bind(row.content, row.source, row.tags, row.note, now, params.id)
+    .bind(row.content, row.source, row.author, row.tags, row.note, now, params.id)
     .run()
 
   if (result.meta.changes === 0) {

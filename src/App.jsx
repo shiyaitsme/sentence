@@ -21,7 +21,8 @@ function App() {
   const [search, setSearch] = useState('')
   const [selectedCountryTags, setSelectedCountryTags] = useState([])
   const [selectedTopicTags, setSelectedTopicTags] = useState([])
-  const [openFilterGroup, setOpenFilterGroup] = useState(null) // 'country' | 'topic' | null
+  const [selectedAuthors, setSelectedAuthors] = useState([])
+  const [openFilterGroup, setOpenFilterGroup] = useState(null) // 'country' | 'topic' | 'author' | null
   const [editingExcerpt, setEditingExcerpt] = useState(null) // null = new
   const [detailExcerpt, setDetailExcerpt] = useState(null)
 
@@ -37,6 +38,15 @@ function App() {
 
   const { countryTagCounts, topicTagCounts } = useMemo(() => splitTagGroups(tagCounts), [tagCounts])
 
+  const authorCounts = useMemo(() => {
+    const counts = new Map()
+    for (const excerpt of excerpts) {
+      if (!excerpt.author) continue
+      counts.set(excerpt.author, (counts.get(excerpt.author) ?? 0) + 1)
+    }
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  }, [excerpts])
+
   const filtered = useMemo(() => {
     const activeTags = [...selectedCountryTags, ...selectedTopicTags]
     return excerpts.filter((excerpt) => {
@@ -45,11 +55,16 @@ function App() {
         const tags = excerpt.tags ?? []
         if (!activeTags.every((tag) => tags.includes(tag))) return false
       }
+      if (selectedAuthors.length > 0 && !selectedAuthors.includes(excerpt.author)) return false
       return true
     })
-  }, [excerpts, search, selectedCountryTags, selectedTopicTags])
+  }, [excerpts, search, selectedCountryTags, selectedTopicTags, selectedAuthors])
 
-  const hasFilters = Boolean(search) || selectedCountryTags.length > 0 || selectedTopicTags.length > 0
+  const hasFilters =
+    Boolean(search) ||
+    selectedCountryTags.length > 0 ||
+    selectedTopicTags.length > 0 ||
+    selectedAuthors.length > 0
 
   const toggleCountryTag = (tag) => {
     setSelectedCountryTags((prev) =>
@@ -63,6 +78,12 @@ function App() {
     )
   }
 
+  const toggleAuthor = (author) => {
+    setSelectedAuthors((prev) =>
+      prev.includes(author) ? prev.filter((item) => item !== author) : [...prev, author],
+    )
+  }
+
   const toggleFilterGroup = (group) => {
     setOpenFilterGroup((prev) => (prev === group ? null : group))
   }
@@ -70,6 +91,7 @@ function App() {
   const clearTagFilters = () => {
     setSelectedCountryTags([])
     setSelectedTopicTags([])
+    setSelectedAuthors([])
   }
 
   const handleNavigate = (nextView) => {
@@ -118,14 +140,17 @@ function App() {
           hasFilters={hasFilters}
           countryTagCounts={countryTagCounts}
           topicTagCounts={topicTagCounts}
+          authorCounts={authorCounts}
           selectedCountryTags={selectedCountryTags}
           selectedTopicTags={selectedTopicTags}
+          selectedAuthors={selectedAuthors}
           openFilterGroup={openFilterGroup}
           onToggleFilterGroup={toggleFilterGroup}
           search={search}
           onSearchChange={setSearch}
           onToggleCountryTag={toggleCountryTag}
           onToggleTopicTag={toggleTopicTag}
+          onToggleAuthor={toggleAuthor}
           onClearTags={clearTagFilters}
           onNavigate={handleNavigate}
           onOpen={setDetailExcerpt}

@@ -24,6 +24,10 @@
 
 > 安全提示：这个项目暂时没有登录系统，任何拿到你网站地址的人理论上都能通过网站的增删改查接口读写这张表。这对"个人随手记"够用，但请不要存真正敏感的隐私内容。以后想加登录，需要在 `functions/` 里加一层身份校验。
 
+## 数据库升级：新增"作者"字段
+
+如果你的 D1 数据库是在这个字段加入之前建的（表已经存在），需要手动加一列，把 `d1/migrations/0001_add_author.sql` 的内容粘贴到 D1 Console 执行一次（或 `npx wrangler d1 execute sentence-db --remote --file=./d1/migrations/0001_add_author.sql`）。本地开发库同理，执行 `npm run db:local:migrate`。全新建库直接用最新的 `d1/schema.sql` 不需要这一步。
+
 ## 本地开发
 
 ```bash

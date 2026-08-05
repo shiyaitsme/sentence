@@ -41,7 +41,9 @@ export function ExcerptCard({ excerpt, onOpen, onEdit, onDelete }) {
       {excerpt.note && <div className="wf-note">{excerpt.note}</div>}
 
       <div className="wf-footer">
-        <span className="wf-source">{excerpt.source || '出处未记'}</span>
+        <span className="wf-source">
+          {[excerpt.source, excerpt.author].filter(Boolean).join(' · ') || '出处未记'}
+        </span>
         {category && <span className={`card-tag card-tag--${tagVariant(category)}`}>{category}</span>}
       </div>
     </article>
